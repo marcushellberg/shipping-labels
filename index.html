@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, minimum-scale=1, initial-scale=1, user-scalable=yes">
+
+  <title>shipping-labels</title>
+  <meta name="description" content="shipping-labels description">
+
+  <script src="/bower_components/webcomponentsjs/webcomponents-loader.js"></script>
+  <script src="papaparse.min.js"></script>
+
+  <link rel="import" href="bower_components/polymer/polymer-element.html">
+  <link rel="import" href="bower_components/polymer/lib/elements/dom-bind.html">
+  <link rel="import" href="bower_components/polymer/lib/elements/dom-repeat.html">
+  <link rel="import" href="src/shipping-labels-app/shipping-label.html">
+  <link rel="import" href="bower_components/vaadin-upload/vaadin-upload.html">
+  <link rel="import" href="bower_components/paper-input/paper-input.html">
+  <link rel="import" href="bower_components/paper-button/paper-button.html">
+  <style>
+    body {
+      position: absolute;
+      font-family: Montserrat;
+      font-weight: 300;
+      font-size: 0;
+      width: 100%;
+    }
+
+    .tools {
+      width: 100%;
+      display: flex;
+      margin-bottom: 50px;
+      font-size: 16px;
+    }
+
+    .tools vaadin-upload {
+      flex: 1;
+    }
+
+    .tools .manual {
+      flex: 2;
+      box-sizing: border-box;
+      padding: 10px;
+    }
+
+    .tools .manual .row {
+      display: flex;
+      width: 100%;
+    }
+
+    .tools .manual .row>* {
+      margin-right: 10px;
+      flex: 1;
+    }
+
+    shipping-label {
+      box-sizing: border-box;
+      /*height: 2in;
+      width: 45%;*/
+      vertical-align: top;
+    }
+    /*shipping-label:nth-child(even) {
+      margin-right: 0.05in;
+    }*/
+
+    shipping-label {
+      width: 70mm;
+      height: 37mm;
+      box-sizing: border-box;
+      page-break-inside: avoid;
+    }
+
+    @media print {
+      .tools {
+        display: none;
+      }
+
+      /*@page {
+        size: 8.5in 11in;
+        margin: 0.5in 0.2in 0.5in 0.2in;
+      }
+
+      shipping-label {
+        width: 4in;
+        height: 2in;
+        page-break-inside: avoid;
+      }*/
+      @page {
+        size: 210mm 297mm;
+        margin: 0;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+  <dom-bind>
+    <template>
+      <div class="tools">
+        <div>
+          <vaadin-upload accept="text/csv" on-upload-before="handleUpload"></vaadin-upload>
+        </div>
+
+        <div class="manual">
+          <h2>Enter manually</h2>
+          <div class="row">
+            <paper-input label="First name" value="{{address.firstName}}"></paper-input>
+            <paper-input label="Last name" value="{{address.lastName}}"></paper-input>
+          </div>
+          <paper-input label="Street" value="{{address.street}}"></paper-input>
+          <div class="row">
+            <paper-input label="City" value="{{address.city}}"></paper-input>
+            <paper-input label="State" value="{{address.state}}"></paper-input>
+            <paper-input label="Zip" value="{{address.zip}}"> </paper-input>
+          </div>
+          <div class="row">
+            <paper-input label="Country" value="{{address.country}}"></paper-input>
+          </div>
+          <div class="row">
+            <paper-input label="Number" value="{{number}}"></paper-input>
+            <paper-button raised on-tap="generate">Generate</paper-button>
+          </div>
+        </div>
+      </div>
+
+      <template is="dom-repeat" items="{{shippingInfo}}">
+        <shipping-label shipping-info="[[item]]"></shipping-labels-app>
+      </template>
+
+    </template>
+  </dom-bind>
+  <script>
+    let template = document.querySelector('dom-bind');
+    template.address = {};
+    template.number = 0;
+    template.generate = function () {
+      template.shippingInfo = Array(parseInt(template.number)).fill().map(foo => Object.assign({}, template.address));
+      console.log(template.shippingInfo);
+    };
+
+    template.addEventListener('dom-change', function () {
+      console.log('template is ready.')
+    });
+
+    template.handleUpload = function (evt) {
+      evt.preventDefault();
+      const reader = new FileReader();
+      reader.onload = function () {
+        template.shippingInfo = Papa.parse(reader.result, {
+          header: true
+        }).data;
+      };
+      reader.readAsText(evt.detail.file);
+    };
+  </script>
+</body>
+
+</html>

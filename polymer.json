@@ -1,0 +1,13 @@
+{
+  "lint": {
+    "rules": [
+      "polymer-2"
+    ]
+  },
+  "builds": [
+    {
+      "name": "bundled",
+      "preset": "es6-bundled"
+    }
+  ]
+}

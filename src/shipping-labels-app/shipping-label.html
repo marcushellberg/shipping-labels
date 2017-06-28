@@ -1,0 +1,56 @@
+<link rel="import" href="../../bower_components/polymer/polymer-element.html">
+
+<dom-module id="shipping-label">
+  <template>
+    <style>
+       :host {
+        box-sizing: border-box;
+        display: inline-block;
+        page-break-inside: avoid;
+        position: relative;
+        /*font-size: 20px;
+        line-height: 30px;
+        padding: 20px;*/
+        font-size: 14px;
+        line-height: 20px;
+        padding: 10px;
+        text-transform: capitalize;
+      }
+
+      .size {
+        position: absolute;
+        /*top: 20px;
+        right: 20px;*/
+        top: 10px;
+        right: 10px;
+        font-size: 16px;
+      }
+
+    </style>
+    <div class="name">[[shippingInfo.firstName]] [[shippingInfo.lastName]]</div>
+    <div class="address">[[shippingInfo.street]]</div>
+    <div class="address2">[[shippingInfo.city]], [[shippingInfo.state]] [[shippingInfo.zip]]</div>
+    <div class="country">[[shippingInfo.country]]</div>
+    <div class="size">[[shippingInfo.size]]</div>
+  </template>
+
+  <script>
+    /**
+     * @customElement
+     * @polymer
+     */
+    class ShippingLabel extends Polymer.Element {
+      static get is() {
+        return 'shipping-label';
+      }
+      static get properties() {
+        return {
+          shippingInfo: Object
+        };
+      }
+
+    }
+
+    window.customElements.define(ShippingLabel.is, ShippingLabel);
+  </script>
+</dom-module>
