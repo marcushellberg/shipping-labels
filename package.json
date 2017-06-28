@@ -1,0 +1,23 @@
+{
+  "name": "shipping-labels",
+  "version": "1.0.0",
+  "description": "",
+  "main": "papaparse.min.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vaadin-marcus/shipping-labels.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/vaadin-marcus/shipping-labels/issues"
+  },
+  "homepage": "https://github.com/vaadin-marcus/shipping-labels#readme",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-gh-pages": "^0.5.4"
+  }
+}
