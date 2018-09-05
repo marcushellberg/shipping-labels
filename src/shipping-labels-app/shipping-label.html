@@ -3,7 +3,7 @@
 <dom-module id="shipping-label">
   <template>
     <style>
-       :host {
+      :host {
         box-sizing: border-box;
         display: inline-block;
         page-break-inside: avoid;
@@ -31,6 +31,7 @@
     <div class="name">[[shippingInfo.firstName]] [[shippingInfo.lastName]]</div>
     <div class="address">[[shippingInfo.street]]</div>
     <div class="address2">[[shippingInfo.city]], [[shippingInfo.state]] [[shippingInfo.zip]]</div>
+    <div class="country">[[shippingInfo.country]]</div>
     <div class="size">[[shippingInfo.size]]</div>
   </template>
 
