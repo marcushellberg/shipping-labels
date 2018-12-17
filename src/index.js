@@ -1,0 +1,1 @@
+import './shipping-labels-app';
