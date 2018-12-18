@@ -56,16 +56,18 @@ class ShippingLabelsApp extends LitElement {
         no-close-on-outside-click
         no-close-on-esc
       ></vaadin-dialog>
-      ${
-        this.shippingInfo.map(
-          details => html`
-            <shipping-label
-              .shipmentDetails="${details}"
-              class="${classMap({ usa: this.shippingLocation === 'USA' })}"
-            ></shipping-label>
-          `
-        )
-      }
+      <div class="labels">
+        ${
+          this.shippingInfo.map(
+            details => html`
+              <shipping-label
+                .shipmentDetails="${details}"
+                class="${classMap({ usa: this.shippingLocation === 'USA' })}"
+              ></shipping-label>
+            `
+          )
+        }
+      </div>
     `;
   }
 
@@ -77,7 +79,10 @@ class ShippingLabelsApp extends LitElement {
         }
 
         header {
+          box-sizing: border-box;
+          background: #fff;
           width: 100%;
+          padding: 16px;
           display: grid;
           grid-template-columns: 40% 1fr 1fr;
           grid-template-rows: repeat(2, 1fr);
@@ -85,12 +90,16 @@ class ShippingLabelsApp extends LitElement {
           align-items: baseline;
           margin-bottom: 50px;
           font-size: 16px;
+          box-shadow: 2px 2px 2px 0px hsla(0, 0%, 0%, 0.1);
         }
 
         header h1 {
           grid-row: 1;
           grid-column: 1/2;
           width: 100%;
+          font-weight: 200;
+          text-transform: uppercase;
+          letter-spacing: 10%;
         }
 
         header vaadin-combo-box {
@@ -109,7 +118,7 @@ class ShippingLabelsApp extends LitElement {
         }
 
         shipping-label {
-          width: 70mm;
+          width: 69mm;
           height: 37mm;
           box-sizing: border-box;
           page-break-inside: avoid;
@@ -117,17 +126,37 @@ class ShippingLabelsApp extends LitElement {
 
         shipping-label.usa {
           height: 2in;
-          width: 45%;
+          width: 3.8in;
           vertical-align: top;
         }
 
-        shipping-label.usa:nth-child(even) {
-          margin-right: 0.05in;
+        .labels {
+          background: #fff;
+          box-sizing: border-box;
+          border: 1px solid #eee;
+          box-shadow: 2px 2px 2px 0px hsla(0, 0%, 0%, 0.1);
+          margin: 20px auto;
+          width: 210mm;
+          padding: 0;
+        }
+
+        :host(.usa) .labels {
+          width: 8.5in;
+          padding: 0.5in 0.2in 0.5in 0.2in;
         }
 
         @media print {
           header {
             display: none;
+          }
+
+          .labels,
+          :host(.usa) .labels {
+            margin: 0;
+            padding: 0;
+            box-shadow: none;
+            width: 100%;
+            border: none;
           }
 
           ${this.getPrintPageSettings()}
@@ -139,22 +168,11 @@ class ShippingLabelsApp extends LitElement {
   getPrintPageSettings() {
     if (this.shippingLocation === 'USA') {
       return `
-        @page {
-          size: 8.5in 11in;
-          margin: 0.5in 0.2in 0.5in 0.2in;
-        }
-
-        shipping-label {
-          width: 4in;
-          height: 2in;
-        }
+        @page { size: 8.5in 11in; margin: 0.5in 0.2in 0.5in 0.2in; }
       `;
     } else {
       return `
-        @page {
-          size: 210mm 297mm;
-          margin: 0;
-        }
+        @page { size: 210mm 297mm; margin: 0; }
       `;
     }
   }
