@@ -46,7 +46,7 @@ class ShippingLabelsApp extends LitElement {
       </header>
       <vaadin-dialog
         .renderer="${this.editorRenderer.bind(this)}"
-        .opened="${this.editorOpen}"
+        ?opened="${this.editorOpen}"
         no-close-on-outside-click
         no-close-on-esc
       ></vaadin-dialog>
@@ -115,9 +115,9 @@ class ShippingLabelsApp extends LitElement {
           vertical-align: top;
         }
 
-        /* shipping-label.usa:nth-child(even) {
+        shipping-label.usa:nth-child(even) {
           margin-right: 0.05in;
-        } */
+        }
 
         @media print {
           header {
