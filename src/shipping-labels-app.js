@@ -25,6 +25,12 @@ class ShippingLabelsApp extends LitElement {
     this.shippingLocations = ['USA', 'EU'];
     this.manualEntry = {};
     this.amount = 20;
+
+    // Needed for using lit-html in the vaadin-dialog renderer
+    this.boundEditorRenderer = this.editorRenderer.bind(this);
+    this.boundUpdateAddress = this.updateAddress.bind(this);
+    this.boundCloseEditor = this.closeEditor.bind(this);
+    this.boundGenerateLabels = this.generateLabels.bind(this);
   }
 
   render() {
@@ -45,7 +51,7 @@ class ShippingLabelsApp extends LitElement {
         <vaadin-button @click="${this.openEditor}">Manual entry</vaadin-button>
       </header>
       <vaadin-dialog
-        .renderer="${this.editorRenderer.bind(this)}"
+        .renderer="${this.boundEditorRenderer}"
         ?opened="${this.editorOpen}"
         no-close-on-outside-click
         no-close-on-esc
@@ -185,7 +191,7 @@ class ShippingLabelsApp extends LitElement {
         }
       </style>
       <h2>Create labels manually</h2>
-      <div class="manual" @change="${this.updateAddress.bind(this)}">
+      <div class="manual" @change="${this.boundUpdateAddress}">
         <div class="row">
           <vaadin-text-field
             label="Extra info"
@@ -227,15 +233,10 @@ class ShippingLabelsApp extends LitElement {
             @change="${e => (this.amount = e.target.value)}"
           ></vaadin-text-field>
           <div class="row">
-            <vaadin-button
-              @click="${this.generateLabels.bind(this)}"
-              theme="primary"
-            >
+            <vaadin-button @click="${this.boundGenerateLabels}" theme="primary">
               Generate
             </vaadin-button>
-            <vaadin-button
-              @click="${this.closeEditor.bind(this)}"
-              theme="tertiary"
+            <vaadin-button @click="${this.boundCloseEditor}" theme="tertiary"
               >Close</vaadin-button
             >
           </div>
