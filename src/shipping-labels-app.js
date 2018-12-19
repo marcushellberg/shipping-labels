@@ -118,8 +118,8 @@ class ShippingLabelsApp extends LitElement {
         }
 
         shipping-label {
-          width: 69mm;
-          height: 37mm;
+          width: 65mm;
+          height: 35mm;
           box-sizing: border-box;
           page-break-inside: avoid;
         }
@@ -168,11 +168,11 @@ class ShippingLabelsApp extends LitElement {
   getPrintPageSettings() {
     if (this.shippingLocation === 'USA') {
       return `
-        @page { size: 8.5in 11in; margin: 0.5in 0.2in 0.5in 0.2in; }
+        @page { size: letter; margin: 0.5in 0.2in 0.5in 0.2in; }
       `;
     } else {
       return `
-        @page { size: 210mm 297mm; margin: 0; }
+        @page { size: A4; margin: 0; }
       `;
     }
   }
