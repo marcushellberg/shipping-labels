@@ -118,15 +118,11 @@ class ShippingLabelsApp extends LitElement {
         }
 
         shipping-label {
-          width: 65mm;
-          height: 35mm;
           box-sizing: border-box;
-          page-break-inside: avoid;
+          break-inside: avoid;
         }
 
         shipping-label.usa {
-          height: 2in;
-          width: 3.8in;
           vertical-align: top;
         }
 
@@ -138,11 +134,19 @@ class ShippingLabelsApp extends LitElement {
           margin: 20px auto;
           width: 210mm;
           padding: 0;
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          grid-row-gap: 0;
+          grid-column-gap: 0;
+          grid-auto-rows: 37mm;
         }
 
         :host(.usa) .labels {
           width: 8.5in;
           padding: 0.5in 0.2in 0.5in 0.2in;
+          grid-template-columns: repeat(2, 1fr);
+          grid-column-gap: 0.2in;
+          grid-auto-rows: 2in;
         }
 
         @media print {
@@ -172,7 +176,7 @@ class ShippingLabelsApp extends LitElement {
       `;
     } else {
       return `
-        @page { size: A4; margin: 0; }
+        @page { size: A4; margin: 0 0 0 0; }
       `;
     }
   }
