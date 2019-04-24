@@ -1,4 +1,4 @@
-import { html, LitElement } from '@polymer/lit-element';
+import { html, LitElement } from 'lit-element';
 import { render } from 'lit-html';
 import { classMap } from 'lit-html/directives/class-map';
 import { parse } from 'papaparse';
@@ -8,6 +8,7 @@ import '@vaadin/vaadin-dialog';
 import '@vaadin/vaadin-text-field';
 import '@vaadin/vaadin-upload';
 import './shipping-label';
+import './styles.css';
 
 class ShippingLabelsApp extends LitElement {
   static get properties() {
@@ -35,150 +36,38 @@ class ShippingLabelsApp extends LitElement {
 
   render() {
     return html`
-      ${this.getStyles()}
       <header>
         <h1>Shipping labels</h1>
-        <vaadin-upload
-          accept="text/csv"
-          @upload-before="${this.handleUpload}"
-        ></vaadin-upload>
+        <vaadin-upload accept="text/csv" @upload-before=${this.handleUpload}></vaadin-upload>
         <vaadin-combo-box
           label="Shipping location"
-          .items="${this.shippingLocations}"
-          .value="${this.shippingLocation}"
-          @value-changed="${this.shippingLocationChanged}"
+          .items=${this.shippingLocations}
+          .value=${this.shippingLocation}
+          @value-changed=${this.shippingLocationChanged}
         ></vaadin-combo-box>
-        <vaadin-button @click="${this.openEditor}">Manual entry</vaadin-button>
+        <vaadin-button @click=${this.openEditor}>Manual entry</vaadin-button>
       </header>
       <vaadin-dialog
-        .renderer="${this.boundEditorRenderer}"
-        ?opened="${this.editorOpen}"
+        .renderer=${this.boundEditorRenderer}
+        ?opened=${this.editorOpen}
         no-close-on-outside-click
         no-close-on-esc
       ></vaadin-dialog>
       <div class="labels">
-        ${
-          this.shippingInfo.map(
-            details => html`
-              <shipping-label
-                .shipmentDetails="${details}"
-                class="${classMap({ usa: this.shippingLocation === 'USA' })}"
-              ></shipping-label>
-            `
-          )
-        }
+        ${this.shippingInfo.map(
+          details => html`
+            <shipping-label
+              .shipmentDetails=${details}
+              class=${classMap({ usa: this.shippingLocation === 'USA' })}
+            ></shipping-label>
+          `
+        )}
       </div>
     `;
   }
 
-  getStyles() {
-    return html`
-      <style>
-        :host {
-          display: block;
-        }
-
-        header {
-          box-sizing: border-box;
-          background: #fff;
-          width: 100%;
-          padding: 16px;
-          display: grid;
-          grid-template-columns: 40% 1fr 1fr;
-          grid-template-rows: repeat(2, 1fr);
-          grid-gap: 10px;
-          align-items: baseline;
-          margin-bottom: 50px;
-          font-size: 16px;
-          box-shadow: 2px 2px 2px 0px hsla(0, 0%, 0%, 0.1);
-        }
-
-        header h1 {
-          grid-row: 1;
-          grid-column: 1/2;
-          width: 100%;
-          font-weight: 200;
-          text-transform: uppercase;
-          letter-spacing: 10%;
-        }
-
-        header vaadin-combo-box {
-          grid-row: 1;
-          grid-column: 3;
-        }
-
-        header vaadin-button {
-          grid-row: 1;
-          grid-column: 4;
-        }
-
-        header vaadin-upload {
-          grid-row: 2;
-          grid-column: 1/5;
-        }
-
-        shipping-label {
-          box-sizing: border-box;
-          break-inside: avoid;
-        }
-
-        shipping-label.usa {
-          vertical-align: top;
-        }
-
-        .labels {
-          background: #fff;
-          box-sizing: border-box;
-          border: 1px solid #eee;
-          box-shadow: 2px 2px 2px 0px hsla(0, 0%, 0%, 0.1);
-          margin: 20px auto;
-          width: 210mm;
-          padding: 0;
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          grid-row-gap: 0;
-          grid-column-gap: 0;
-          grid-auto-rows: 37mm;
-        }
-
-        :host(.usa) .labels {
-          width: 8.5in;
-          padding: 0.5in 0.2in 0.5in 0.2in;
-          grid-template-columns: repeat(2, 1fr);
-          grid-column-gap: 0.2in;
-          grid-auto-rows: 2in;
-        }
-
-        @media print {
-          header {
-            display: none;
-          }
-
-          .labels,
-          :host(.usa) .labels {
-            margin: 0;
-            padding: 0;
-            box-shadow: none;
-            width: 100%;
-            border: none;
-          }
-
-          ${this.getPrintPageSettings()}
-        }
-      </style>
-    `;
-  }
-
-  getPrintPageSettings() {
-    if (this.shippingLocation === 'USA') {
-      return `
-        @page { size: letter; margin: 0.5in 0.2in 0.5in 0.2in; }
-      `;
-    } else {
-      return `
-        @page { size: A4; margin: 0 0 0 0; }
-      `;
-    }
+  createRenderRoot() {
+    return this;
   }
 
   handleUpload(e) {
@@ -213,32 +102,16 @@ class ShippingLabelsApp extends LitElement {
         }
       </style>
       <h2>Create labels manually</h2>
-      <div class="manual" @change="${this.boundUpdateAddress}">
+      <div class="manual" @change=${this.boundUpdateAddress}>
         <div class="row">
-          <vaadin-text-field
-            label="Extra info"
-            name="extraInfo"
-          ></vaadin-text-field>
-          <vaadin-text-field
-            label="Extra info 2"
-            name="extraInfo2"
-          ></vaadin-text-field>
+          <vaadin-text-field label="Extra info" name="extraInfo"></vaadin-text-field>
+          <vaadin-text-field label="Extra info 2" name="extraInfo2"></vaadin-text-field>
         </div>
         <div class="row">
-          <vaadin-text-field
-            label="First name"
-            name="firstName"
-          ></vaadin-text-field>
-          <vaadin-text-field
-            label="Last name"
-            name="lastName"
-          ></vaadin-text-field>
+          <vaadin-text-field label="First name" name="firstName"></vaadin-text-field>
+          <vaadin-text-field label="Last name" name="lastName"></vaadin-text-field>
         </div>
-        <vaadin-text-field
-          class="fullwidth"
-          label="Street"
-          name="street"
-        ></vaadin-text-field>
+        <vaadin-text-field class="fullwidth" label="Street" name="street"></vaadin-text-field>
         <div class="row">
           <vaadin-text-field label="City" name="city"></vaadin-text-field>
           <vaadin-text-field label="State" name="state"></vaadin-text-field>
@@ -251,16 +124,14 @@ class ShippingLabelsApp extends LitElement {
         <div class="row">
           <vaadin-text-field
             label="Amount"
-            .value="${this.amount}"
-            @change="${e => (this.amount = e.target.value)}"
+            .value=${this.amount}
+            @change=${e => (this.amount = e.target.value)}
           ></vaadin-text-field>
           <div class="row">
-            <vaadin-button @click="${this.boundGenerateLabels}" theme="primary">
+            <vaadin-button @click=${this.boundGenerateLabels} theme="primary">
               Generate
             </vaadin-button>
-            <vaadin-button @click="${this.boundCloseEditor}" theme="tertiary"
-              >Close</vaadin-button
-            >
+            <vaadin-button @click=${this.boundCloseEditor} theme="tertiary">Close</vaadin-button>
           </div>
         </div>
       </div>
@@ -289,6 +160,27 @@ class ShippingLabelsApp extends LitElement {
 
   shippingLocationChanged(e) {
     this.shippingLocation = e.target.value;
+    this.injectPrintPageSettings();
+  }
+
+  injectPrintPageSettings() {
+    const pageSettings =
+      this.shippingLocation === 'USA'
+        ? '@page { size: letter; margin: 0.5in 0.2in 0.5in 0.2in;'
+        : '@page { size: A4; margin: 1mm 3mm; }';
+
+    const oldStyle = document.querySelector('#pageSettings');
+    if (oldStyle) {
+      oldStyle.parentElement.removeChild(oldStyle);
+    }
+
+    const style = document.createElement('style');
+    style.type = 'text/css';
+    style.media = 'print';
+    style.id = 'pageSettings';
+
+    style.appendChild(document.createTextNode(pageSettings));
+    document.head.appendChild(style);
   }
 
   openEditor() {

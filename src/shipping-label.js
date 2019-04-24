@@ -1,4 +1,4 @@
-import { html, LitElement } from '@polymer/lit-element';
+import { html, LitElement } from 'lit-element';
 
 class ShippingLabel extends LitElement {
   static get properties() {
@@ -19,17 +19,15 @@ class ShippingLabel extends LitElement {
       </div>
       <div class="address">${this.shipmentDetails.street}</div>
       <div class="address2">
-        ${
-          this.shippingLocation === 'EU'
-            ? html`
-                ${this.shipmentDetails.zip} ${this.shipmentDetails.city},
-                ${this.shipmentDetails.state}
-              `
-            : html`
-                ${this.shipmentDetails.city}, ${this.shipmentDetails.state}
-                ${this.shipmentDetails.zip}
-              `
-        }
+        ${this.shippingLocation === 'EU'
+          ? html`
+              ${this.shipmentDetails.zip} ${this.shipmentDetails.city},
+              ${this.shipmentDetails.state}
+            `
+          : html`
+              ${this.shipmentDetails.city}, ${this.shipmentDetails.state}
+              ${this.shipmentDetails.zip}
+            `}
         <div class="country">${this.shipmentDetails.country}</div>
         <div class="size">${this.shipmentDetails.size}</div>
       </div>
