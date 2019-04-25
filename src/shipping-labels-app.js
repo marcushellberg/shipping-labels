@@ -24,6 +24,23 @@ class ShippingLabelsApp extends LitElement {
     this.shippingLocation = 'USA';
     this.shippingInfo = [];
     this.shippingLocations = ['USA', 'EU'];
+    this.margins = new Map([
+      [
+        'USA',
+        {
+          top: '0.5in',
+          left: '0.2in'
+        }
+      ],
+      [
+        'EU',
+        {
+          top: '1mm',
+          left: '3mm'
+        }
+      ]
+    ]);
+    this.setMarginsByLocation();
     this.manualEntry = {};
     this.amount = 20;
 
@@ -39,12 +56,28 @@ class ShippingLabelsApp extends LitElement {
       <header>
         <h1>Shipping labels</h1>
         <vaadin-upload accept="text/csv" @upload-before=${this.handleUpload}></vaadin-upload>
-        <vaadin-combo-box
-          label="Shipping location"
-          .items=${this.shippingLocations}
-          .value=${this.shippingLocation}
-          @value-changed=${this.shippingLocationChanged}
-        ></vaadin-combo-box>
+        <div class="print-settings">
+          <vaadin-text-field
+            label="Top margin"
+            .value=${this.marginTop}
+            name="marginTop"
+            @change=${this.marginChanged}
+          ></vaadin-text-field>
+          <vaadin-text-field
+            label="Left margin"
+            .value=${this.marginLeft}
+            name="marginLeft"
+            @change=${this.marginChanged}
+          ></vaadin-text-field>
+          <vaadin-combo-box
+            label="Shipping location"
+            .items=${this.shippingLocations}
+            .value=${this.shippingLocation}
+            @value-changed=${this.shippingLocationChanged}
+          >
+          </vaadin-combo-box>
+        </div>
+
         <vaadin-button @click=${this.openEditor}>Manual entry</vaadin-button>
       </header>
       <vaadin-dialog
@@ -160,14 +193,27 @@ class ShippingLabelsApp extends LitElement {
 
   shippingLocationChanged(e) {
     this.shippingLocation = e.target.value;
+    this.setMarginsByLocation();
+    this.injectPrintPageSettings();
+  }
+
+  setMarginsByLocation() {
+    const margins = this.margins.get(this.shippingLocation);
+    this.marginTop = margins.top;
+    this.marginLeft = margins.left;
+  }
+
+  marginChanged(e) {
+    const { name, value } = e.target;
+    this[name] = value;
     this.injectPrintPageSettings();
   }
 
   injectPrintPageSettings() {
     const pageSettings =
       this.shippingLocation === 'USA'
-        ? '@page { size: letter; margin: 0.5in 0.2in 0.5in 0.2in;'
-        : '@page { size: A4; margin: 1mm 3mm; }';
+        ? `@page { size: letter; margin: ${this.marginTop} ${this.marginLeft};`
+        : `@page { size: A4; margin: ${this.marginTop} ${this.marginLeft}; }`;
 
     const oldStyle = document.querySelector('#pageSettings');
     if (oldStyle) {
